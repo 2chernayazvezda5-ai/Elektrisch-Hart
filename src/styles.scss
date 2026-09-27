@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  background-color: var(--cool-black);
+  color: var(--simple-text);
+  margin: 0;
+}
+
+:root {
+  --mcqueen: #FFC107;
+  --safety: #4CAF50;
+  --cool-black: #0a0a0a;
+  --simple-text: #ffffff;
+  --muted-text: #888888;
+}
