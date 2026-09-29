@@ -1,0 +1,251 @@
+.login-page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ─── LEFT SIDE ───────────────────────────────────────────
+.left-side {
+  flex: 1;
+  background-color: var(--cool-black);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 56px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  img {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+  }
+
+  span {
+    font-size: 20px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--simple-text);
+  }
+}
+
+.left-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+  }
+
+  > p {
+    text-align: center;
+    color: var(--muted-text);
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--simple-text);
+  }
+
+  input {
+    background-color: transparent;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--simple-text);
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: var(--muted-text);
+    }
+
+    &:focus {
+      border-color: var(--mcqueen);
+    }
+  }
+}
+
+a {
+  color: var(--mcqueen);
+  text-decoration: none;
+  font-size: 13px;
+  display: block;
+  text-align: right;
+}
+
+.left-body > button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: var(--mcqueen);
+  color: black;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted-text);
+  font-size: 12px;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #2a2a2a;
+  }
+}
+
+.big-corpo {
+  display: flex;
+  gap: 10px;
+
+  button {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: transparent;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: var(--simple-text);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+      border-color: #444;
+    }
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.left-body > p:last-child {
+  text-align: center;
+  color: var(--muted-text);
+  font-size: 13px;
+
+  .highlight a {
+    color: var(--mcqueen);
+    font-weight: 600;
+    text-decoration: none;
+  }
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #1a3a2a;
+  border-radius: 10px;
+  padding: 14px 18px;
+  background-color: #0a1f15;
+
+  img {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  h4 {
+    color: var(--safety);
+    font-size: 13px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  p {
+    color: var(--safety);
+    font-size: 12px;
+    margin: 0;
+    text-align: left;
+  }
+}
+
+// ─── RIGHT SIDE ──────────────────────────────────────────
+.right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 64px 56px;
+  background-image: url('../../assets/NagiCar.jpg');
+  background-size: cover;
+  background-position: center;
+
+  h1 {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--simple-text);
+    line-height: 1.1;
+    margin: 0 0 28px 0;
+  }
+}
+
+.cute-info {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--simple-text);
+    backdrop-filter: blur(4px);
+
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// ─── GLOBAL ──────────────────────────────────────────────
+.highlight {
+  color: var(--mcqueen);
+}

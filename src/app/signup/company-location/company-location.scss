@@ -1,0 +1,41 @@
+.location-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-6 { grid-column: span 6; }
+
+.zip-row {
+  display: flex;
+  gap: 12px;
+
+  input {
+    flex: 1;
+  }
+}
+
+.search-button {
+  padding: 0 24px;
+  border: 1px solid var(--mcqueen);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mcqueen);
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.side-footer {
+  margin: 24px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted-text);
+  font-size: 12px;
+}

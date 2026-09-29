@@ -1,0 +1,114 @@
+<div class="signup-page">
+  <app-signup-header [currentStep]="2" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Cadastro de <span class="highlight">Motorista</span></h1>
+      <p class="page-subtitle">
+        Preencha seus dados para criar sua conta e começar a aproveitar tudo que o FyChar oferece.
+      </p>
+
+      <form [formGroup]="registerForm" (ngSubmit)="submit()">
+        <h3 class="form-title">👤 Seus dados pessoais <small>* Campos obrigatórios</small></h3>
+
+        <div class="form-grid">
+          <div class="info-group">
+            <label>Nome completo *</label>
+            <input type="text" formControlName="fullName" placeholder="Digite seu nome completo" />
+          </div>
+          <div class="info-group">
+            <label>E-mail *</label>
+            <input type="email" formControlName="email" placeholder="seu@email.com" />
+          </div>
+          <div class="info-group">
+            <label>Telefone *</label>
+            <input type="tel" formControlName="phone" placeholder="(11) 99999-9999" />
+          </div>
+          <div class="info-group">
+            <label>CPF *</label>
+            <input type="text" formControlName="cpf" placeholder="000.000.000-00" />
+          </div>
+          <div class="info-group">
+            <label>Data de nascimento *</label>
+            <input type="text" formControlName="birthDate" placeholder="dd/mm/aaaa" />
+          </div>
+          <div class="info-group">
+            <label>Senha *</label>
+            <div class="password-field">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Mínima 8 caracteres"
+              />
+              <button type="button" class="eye" (click)="showPassword = !showPassword">👁</button>
+            </div>
+          </div>
+          <div class="info-group">
+            <label>Confirmar senha *</label>
+            <div class="password-field">
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Digite sua senha novamente"
+              />
+              <button
+                type="button"
+                class="eye"
+                (click)="showConfirmPassword = !showConfirmPassword"
+              >
+                👁
+              </button>
+            </div>
+            @if (registerForm.touched && registerForm.hasError('passwordsMismatch')) {
+              <span class="error">As senhas não conferem.</span>
+            }
+          </div>
+        </div>
+
+        <button class="main-button submit-button" type="submit">Continuar</button>
+      </form>
+
+      <div class="safety-note">
+        <h4>Seus dados estão protegidos</h4>
+        <p>Sua privacidade em primeiro lugar, com criptografia de ponta a ponta</p>
+      </div>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image"></div>
+      <div class="side-body">
+        <h2>Ao se cadastrar como motorista você poderá:</h2>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">📍</div>
+            <div class="benefit-text">
+              <strong>Encontrar carregadores</strong>
+              <span>Localize estações próximas e veja disponibilidade em tempo real.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🧭</div>
+            <div class="benefit-text">
+              <strong>Planejar viagens inteligentes</strong>
+              <span>Crie rotas otimizadas com paradas para recarga.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Alugar carregadores pessoais</strong>
+              <span>Mais praticidade e liberdade onde você estiver.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🔎</div>
+            <div class="benefit-text">
+              <strong>Descobrir veículos elétricos</strong>
+              <span>Compare modelos e tire dúvidas</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+</div>

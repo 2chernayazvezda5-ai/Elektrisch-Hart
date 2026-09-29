@@ -1,0 +1,99 @@
+<div class="signup-page">
+  <app-signup-header flow="company" [currentStep]="3" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Tipo de <span class="highlight">estabelecimento</span></h1>
+      <p class="page-subtitle">Selecione a categoria que melhor descreve seu estabelecimento.</p>
+
+      <div class="notice">
+        ⓘ Essa informação nos ajuda a oferecer os recursos e benefícios ideais para o seu tipo de
+        negócio.
+      </div>
+
+      <label class="section-label"
+        >Categoria do estabelecimento <span class="highlight">*</span></label
+      >
+      <div class="category-grid">
+        @for (category of categories; track category.label) {
+          <button
+            type="button"
+            class="category-card"
+            [class.selected]="selectedCategory === category.label"
+            (click)="select(category)"
+          >
+            <span class="category-icon">{{ category.icon }}</span>
+            <strong>{{ category.label }}</strong>
+            <span class="category-hint">{{ category.hint }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="info-group description-group">
+        <label>Descrição do estabelecimento (opcional)</label>
+        <textarea
+          [(ngModel)]="description"
+          maxlength="500"
+          placeholder="Conte-nos um pouco mais sobre o seu negócio..."
+        ></textarea>
+        <span class="field-count">{{ description.length }}/500</span>
+      </div>
+
+      <button class="main-button submit-button" [disabled]="!selectedCategory" (click)="submit()">
+        Continuar →
+      </button>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image"></div>
+      <div class="side-body">
+        <h2>Como seu tipo de estabelecimento <span class="highlight">faz a diferença</span></h2>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">👁</div>
+            <div class="benefit-text">
+              <strong>Apareça para mais motoristas</strong>
+              <span
+                >Seu estabelecimento será exibido para milhares de motoristas que procuram por
+                carregadores.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Gerencie seus carregadores</strong>
+              <span
+                >Cadastre seus carregadores, defina preços e horários e acompanhe o uso em tempo
+                real.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">📈</div>
+            <div class="benefit-text">
+              <strong>Receba mais clientes</strong>
+              <span
+                >Atraia novos clientes para seu negócio enquanto oferece uma solução essencial para
+                veículos elétricos.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🛡</div>
+            <div class="benefit-text">
+              <strong>Mais credibilidade</strong>
+              <span
+                >Estabelecimentos verificados transmitem mais confiança e segurança aos
+                motoristas.</span
+              >
+            </div>
+          </li>
+        </ul>
+        <p class="side-footer">
+          Você poderá alterar essas informações a qualquer momento nas configurações da sua conta.
+        </p>
+      </div>
+    </aside>
+  </main>
+</div>

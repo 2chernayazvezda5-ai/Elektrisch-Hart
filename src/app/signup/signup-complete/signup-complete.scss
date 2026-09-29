@@ -1,0 +1,58 @@
+.side-image {
+  background-image: url('../../../assets/NagiCar.jpg');
+}
+
+.summary-title {
+  margin: 0 0 16px;
+  color: var(--mcqueen);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.summary-list {
+  margin: 0;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+
+  dt {
+    color: var(--muted-text);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 500;
+  }
+}
+
+.verified-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background-color: var(--cool-black);
+
+  .benefit-text {
+    flex: 1;
+  }
+}
+
+.verified-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  background-color: #0a1f15;
+  color: var(--safety);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.submit-button {
+  margin-top: 24px;
+}

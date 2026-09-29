@@ -1,0 +1,82 @@
+<div class="signup-page">
+  <app-signup-header [currentStep]="4" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Verifique seu <span class="highlight">e-mail</span></h1>
+      <p class="page-subtitle">
+        Enviamos um código de verificação para o e-mail <span class="highlight">{{ email }}</span
+        >. Digite o código abaixo para confirmar sua conta e continuar.
+      </p>
+
+      <div class="card verification-card">
+        <div class="mail-icon">✉</div>
+        <h3>Código de verificação</h3>
+
+        <div class="digit-list">
+          @for (digit of digits; track $index; let i = $index) {
+            <input
+              #digitBox
+              class="digit-box"
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+              (input)="onDigitInput(i, $event)"
+              (keydown)="onDigitKeydown(i, $event)"
+              (paste)="onPaste($event)"
+            />
+          }
+        </div>
+
+        <p class="timer">
+          O código expira em <span class="highlight">{{ timeLeft }}</span>
+        </p>
+
+        <div class="resend">
+          <p>Não recebeu o código?</p>
+          <button type="button" class="resend-button" (click)="resendCode()">
+            Reenviar código ↻
+          </button>
+        </div>
+      </div>
+
+      <button class="main-button submit-button" (click)="verify()">Verificar e continuar →</button>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image">
+        <span class="charging-badge">● CARREGANDO</span>
+      </div>
+      <div class="side-body">
+        <h2>Quase lá, motorista!</h2>
+        <p>
+          A verificação garante a segurança da sua conta e permite que você aproveite todos os
+          recursos do FyChar.
+        </p>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">🛡</div>
+            <div class="benefit-text">
+              <strong>Conta segura</strong>
+              <span>Protegemos seus dados com criptografia de ponta a ponta.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Acesso completo</strong>
+              <span>Após a verificação, você terá acesso a todos os recursos.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🔔</div>
+            <div class="benefit-text">
+              <strong>Notificações personalizadas</strong>
+              <span>Receba alertas de carregadores, promoções e muito mais.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+</div>

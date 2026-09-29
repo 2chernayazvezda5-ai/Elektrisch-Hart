@@ -1,0 +1,40 @@
+.side-image {
+  background-image: url('../../../assets/NagiCar.jpg');
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  margin: 0 0 16px;
+
+  small {
+    color: var(--muted-text);
+    font-weight: 400;
+    font-size: 11px;
+  }
+}
+
+.password-field {
+  position: relative;
+
+  input {
+    padding-right: 44px;
+  }
+
+  .eye {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--muted-text);
+    cursor: pointer;
+  }
+}
+
+.submit-button {
+  margin-top: 32px;
+}

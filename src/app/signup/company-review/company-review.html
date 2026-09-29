@@ -1,0 +1,209 @@
+<div class="signup-page">
+  <app-signup-header flow="company" [currentStep]="5" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">
+        Quase pronto! <span class="highlight">Revise suas informações</span>
+      </h1>
+      <p class="page-subtitle">
+        Confira os dados do seu estabelecimento antes de concluir o cadastro.
+      </p>
+
+      <div class="review-grid">
+        <div class="card review-card">
+          <div class="card-header">
+            <h3>💼 Dados da empresa</h3>
+            <button type="button" class="edit-button" (click)="edit('company-register')">
+              ✎ Editar
+            </button>
+          </div>
+          <div class="field">
+            <span class="field-label">Nome do estabelecimento</span
+            ><span>{{ company.name || '—' }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">CNPJ</span><span>{{ company.cnpj || '—' }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">E-mail comercial</span><span>{{ company.email || '—' }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Telefone comercial</span
+            ><span>{{ company.phone || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="card review-card">
+          <div class="card-header">
+            <h3>📍 Localização</h3>
+            <button type="button" class="edit-button" (click)="edit('company-location')">
+              ✎ Editar
+            </button>
+          </div>
+          <div class="field">
+            <span class="field-label">Endereço</span
+            ><span>{{ company.street }}, {{ company.number }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Complemento</span><span>{{ company.complement || '—' }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Bairro</span><span>{{ company.district || '—' }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Cidade / Estado</span
+            ><span>{{ company.city }} / {{ company.state }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">CEP</span><span>{{ company.zipCode || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="card review-card">
+          <div class="card-header">
+            <h3>🏠 Tipo de estabelecimento</h3>
+            <button type="button" class="edit-button" (click)="edit('company-category')">
+              ✎ Editar
+            </button>
+          </div>
+          <div class="field">
+            <span class="field-label">Categoria selecionada</span>
+            <div class="category-box">
+              <strong>{{ company.category || '—' }}</strong>
+              <small>{{ company.categoryHint }}</small>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">Descrição</span><span>{{ company.description || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="card review-card">
+          <div class="card-header">
+            <h3>ⓘ Informações adicionais</h3>
+            <button type="button" class="edit-button" (click)="edit('company-infrastructure')">
+              ✎ Editar
+            </button>
+          </div>
+          <div class="field">
+            <span class="field-label">Taxa de ociosidade</span
+            ><span>{{ company.idleFee ? 'R$ ' + company.idleFee + ' por hora' : '—' }}</span>
+          </div>
+          <div class="field">
+            <span class="field-label">Informações adicionais</span
+            ><span>{{ company.additionalInfo || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="card review-card full-width">
+          <div class="card-header">
+            <h3>🗄 Infraestrutura</h3>
+            <button type="button" class="edit-button" (click)="edit('company-infrastructure')">
+              ✎ Editar
+            </button>
+          </div>
+          <div class="infra-grid">
+            <div class="field">
+              <span class="field-label">Quantidade de carregadores</span
+              ><span>{{ company.chargerCount }} unidades</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Velocidade de carregamento</span
+              ><span>{{ company.chargingSpeed }}</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Potência dos carregadores</span
+              ><span>{{ company.chargerPower }}</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Horário de funcionamento</span
+              ><span>{{ company.openingHours }}</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Tipo de conector</span
+              ><span>{{ company.connectorType }}</span>
+            </div>
+            <div class="field">
+              <span class="field-label">Preço por kWh</span><span>{{ price }}</span>
+            </div>
+          </div>
+          @if (extras.length) {
+            <div class="field">
+              <span class="field-label">Recursos adicionais</span>
+              <ul class="extra-list">
+                @for (extra of extras; track extra) {
+                  <li>☑ {{ extra }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="safety-note">
+        <h4>Seus dados estão seguros</h4>
+        <p>
+          Utilizamos criptografia de ponta a ponta para proteger todas as informações do seu
+          estabelecimento.
+        </p>
+      </div>
+
+      <button class="main-button finish-button" (click)="finish()">
+        <strong>🚀 Concluir cadastro do estabelecimento</strong>
+        <small>Seu estabelecimento será analisado e ativado em breve</small>
+      </button>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image"></div>
+      <div class="side-body">
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">🎉</div>
+            <div class="benefit-text">
+              <strong>Parabéns!</strong>
+              <span
+                >Você concluiu todas as etapas do cadastro. Agora é só aguardar nossa análise.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🕒</div>
+            <div class="benefit-text">
+              <strong>Análise do cadastro</strong>
+              <span>Nossa equipe irá analisar as informações enviadas em até 24 horas úteis.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">✉</div>
+            <div class="benefit-text">
+              <strong>Confirmação por e-mail</strong>
+              <span>Você receberá um e-mail assim que seu estabelecimento for aprovado.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">✅</div>
+            <div class="benefit-text">
+              <strong>Ativação da conta</strong>
+              <span>Após a aprovação, seu estabelecimento estará disponível para motoristas.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">💲</div>
+            <div class="benefit-text">
+              <strong>Comece a receber</strong>
+              <span>Divulgue seus carregadores e comece a atender milhares de motoristas.</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="support-box">
+          <strong>Dúvidas ou precisa de ajuda?</strong>
+          <span>Fale com nossa equipe de suporte</span>
+          <span class="support-contact">suporte&#64;fychar.com.br • (11) 3003-1234</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>

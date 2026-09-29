@@ -1,0 +1,93 @@
+.side-image {
+  position: relative;
+  background-image: url('../../../assets/NagiCar.jpg');
+}
+
+.charging-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.verification-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+  }
+}
+
+.mail-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #2a2410;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mcqueen);
+}
+
+.digit-list {
+  display: flex;
+  gap: 12px;
+}
+
+.digit-box {
+  width: 50px;
+  height: 56px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--simple-text);
+  background-color: var(--cool-black);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+
+  &:focus {
+    border-color: var(--mcqueen);
+  }
+}
+
+.timer {
+  margin: 0;
+  color: var(--muted-text);
+  font-size: 12px;
+}
+
+.resend {
+  width: 100%;
+  text-align: center;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+
+  p {
+    margin: 0 0 6px;
+    color: var(--muted-text);
+    font-size: 13px;
+  }
+}
+
+.resend-button {
+  background: none;
+  border: none;
+  color: var(--mcqueen);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.submit-button {
+  margin-top: 24px;
+}
