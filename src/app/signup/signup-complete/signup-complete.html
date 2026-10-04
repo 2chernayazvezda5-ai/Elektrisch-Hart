@@ -1,0 +1,96 @@
+<div class="signup-page">
+  <app-signup-header [currentStep]="5" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Cadastro <span class="highlight">concluído!</span></h1>
+      <p class="page-subtitle">
+        Tudo pronto, motorista! Sua conta foi criada com sucesso. Veja um resumo dos seus dados e
+        comece a aproveitar o FyChar.
+      </p>
+
+      <div class="card summary-card">
+        <h3 class="summary-title">RESUMO DO SEU CADASTRO</h3>
+
+        <dl class="summary-list">
+          <div class="summary-row">
+            <dt>Nome completo</dt>
+            <dd>{{ driver.fullName || '—' }}</dd>
+          </div>
+          <div class="summary-row">
+            <dt>E-mail</dt>
+            <dd>{{ driver.email || '—' }}</dd>
+          </div>
+          <div class="summary-row">
+            <dt>Telefone</dt>
+            <dd>{{ driver.phone || '—' }}</dd>
+          </div>
+          <div class="summary-row">
+            <dt>Tipo de conta</dt>
+            <dd>Motorista</dd>
+          </div>
+          <div class="summary-row">
+            <dt>Veículo</dt>
+            <dd>{{ vehicle }}</dd>
+          </div>
+          <div class="summary-row">
+            <dt>Placa</dt>
+            <dd>{{ driver.plate || '—' }}</dd>
+          </div>
+        </dl>
+
+        <div class="verified-box">
+          <div class="benefit-icon">🛡</div>
+          <div class="benefit-text">
+            <strong>Conta segura e verificada</strong>
+            <span>Seus dados estão protegidos com criptografia de ponta a ponta.</span>
+          </div>
+          <span class="verified-badge">Verificado ✓</span>
+        </div>
+      </div>
+
+      <button class="main-button submit-button" (click)="goToDashboard()">
+        Ir para o meu painel →
+      </button>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image"></div>
+      <div class="side-body">
+        <h2>Bem-vindo ao FyChar! ⚡</h2>
+        <p>
+          Você agora faz parte de uma comunidade que impulsiona o futuro da mobilidade elétrica.
+        </p>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">📍</div>
+            <div class="benefit-text">
+              <strong>Encontre carregadores</strong>
+              <span
+                >Localize pontos de recarga inteligentes perto de você de maneira intuitiva.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Economize com energia</strong>
+              <span
+                >Compare preços em tempo real e escolha as melhores opções para sua bateria.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">👥</div>
+            <div class="benefit-text">
+              <strong>Compartilhe e colabore</strong>
+              <span
+                >Alugue seu carregador privado e conecte-se com outros motoristas parceiros.</span
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+</div>

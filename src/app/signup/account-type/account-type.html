@@ -1,0 +1,95 @@
+<div class="signup-page">
+  <app-signup-header [currentStep]="1" />
+
+  <main class="account-type-content">
+    <h1 class="page-title">Como você vai usar o <span class="highlight">FyChar</span>?</h1>
+    <p class="page-subtitle">
+      Escolha a opção que melhor representa você. Você poderá alterar depois nas configurações.
+    </p>
+
+    <div class="type-list">
+      <section class="type-card driver">
+        <span class="recommended">★ RECOMENDADO</span>
+        <div class="type-icon">👤</div>
+        <h2>Motorista</h2>
+        <p class="type-description">Para quem possui ou utiliza um veículo elétrico.</p>
+
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">📍</div>
+            <div class="benefit-text">
+              <strong>Encontre carregadores próximos</strong>
+              <span>Localize estações disponíveis na sua região em tempo real.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🧭</div>
+            <div class="benefit-text">
+              <strong>Planeje suas viagens</strong>
+              <span>Crie rotas inteligentes com paradas otimizadas para recarga.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Alugue carregadores pessoais</strong>
+              <span>Alugue carregadores portáteis de forma prática e rápida.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🔎</div>
+            <div class="benefit-text">
+              <strong>Descubra veículos elétricos</strong>
+              <span>Compare modelos e encontre o carro elétrico ideal para você.</span>
+            </div>
+          </li>
+        </ul>
+
+        <button class="main-button" (click)="choose('driver')">Continuar como motorista →</button>
+      </section>
+
+      <section class="type-card establishment">
+        <div class="type-icon">💼</div>
+        <h2>Estabelecimento</h2>
+        <p class="type-description">
+          Para empresas e estabelecimentos que oferecem serviços para motoristas.
+        </p>
+
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">🏠</div>
+            <div class="benefit-text">
+              <strong>Cadastre seu estabelecimento</strong>
+              <span>Divulgue seu negócio na maior rede de mobilidade elétrica.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🔋</div>
+            <div class="benefit-text">
+              <strong>Ofereça seus carregadores</strong>
+              <span>Disponibilize seus pontos de recarga para atrair novos motoristas.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">📅</div>
+            <div class="benefit-text">
+              <strong>Gerencie agendamentos</strong>
+              <span>Acompanhe reservas de recarga, disponibilidade e utilização.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">📈</div>
+            <div class="benefit-text">
+              <strong>Aumente sua visibilidade</strong>
+              <span>Seja encontrado facilmente por milhares de motoristas qualificados.</span>
+            </div>
+          </li>
+        </ul>
+
+        <button class="main-button" (click)="choose('establishment')">
+          Continuar como estabelecimento →
+        </button>
+      </section>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,106 @@
+.side-image {
+  background-image: url('../../../assets/NagiCar.jpg');
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    font-size: 15px;
+  }
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  color: #a78bfa;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.field-label {
+  color: var(--muted-text);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.category-box {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #1a1a22;
+
+  small {
+    color: var(--muted-text);
+    font-size: 11px;
+  }
+}
+
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 24px;
+}
+
+.extra-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 13px;
+}
+
+.finish-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 24px;
+
+  small {
+    font-size: 11px;
+    font-weight: 400;
+  }
+}
+
+.support-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 24px;
+  padding: 14px 18px;
+  border: 1px solid var(--establishment);
+  border-radius: 10px;
+  background-color: #14112b;
+  font-size: 12px;
+
+  .support-contact {
+    color: #a78bfa;
+    font-weight: 600;
+  }
+}

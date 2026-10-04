@@ -1,0 +1,162 @@
+<div class="signup-page">
+  <app-signup-header flow="company" [currentStep]="4" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Infraestrutura <span class="highlight">do estabelecimento</span></h1>
+      <p class="page-subtitle">
+        Informe os detalhes da infraestrutura e dos carregadores disponíveis.
+      </p>
+
+      <form [formGroup]="infrastructureForm" (ngSubmit)="submit()">
+        <div class="card">
+          <h3 class="form-title">Carregadores disponíveis</h3>
+          <p class="form-description">
+            Adicione as informações sobre os carregadores que seu estabelecimento possui.
+          </p>
+
+          <div class="form-grid three-columns">
+            <div class="info-group">
+              <label>Quantidade de carregadores *</label>
+              <div class="counter">
+                <button type="button" (click)="changeCount(-1)">−</button>
+                <span>{{ infrastructureForm.value.chargerCount }}</span>
+                <button type="button" (click)="changeCount(1)">+</button>
+              </div>
+            </div>
+            <div class="info-group">
+              <label>Potência dos carregadores *</label>
+              <select formControlName="chargerPower">
+                <option value="">Selecione a potência</option>
+                @for (power of powers; track power) {
+                  <option [value]="power">{{ power }}</option>
+                }
+              </select>
+            </div>
+            <div class="info-group">
+              <label>Tipo de conector *</label>
+              <select formControlName="connectorType">
+                <option value="">Selecione o tipo</option>
+                @for (connector of connectors; track connector) {
+                  <option [value]="connector">{{ connector }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="speed-row">
+            <div class="info-group">
+              <label>Velocidade de carregamento *</label>
+              <div class="speed-list">
+                @for (speed of speeds; track speed.label) {
+                  <button
+                    type="button"
+                    class="speed-card"
+                    [class.selected]="infrastructureForm.value.chargingSpeed === speed.label"
+                    (click)="setSpeed(speed.label)"
+                  >
+                    <strong>⚡ {{ speed.label }}</strong>
+                    <span>{{ speed.detail }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+            <div class="info-group">
+              <label>Horário de funcionamento *</label>
+              <input type="text" formControlName="openingHours" placeholder="Ex.: 08:00 - 22:00" />
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="info-group">
+              <label>Preço por kWh (R$) *</label>
+              <input type="text" formControlName="pricePerKwh" placeholder="Ex.: 1,99" />
+              <label class="checkbox-item">
+                <input type="checkbox" formControlName="isFree" /> gratuito
+              </label>
+            </div>
+            <div class="info-group">
+              <label>Taxa de ociosidade (opcional)</label>
+              <input type="text" formControlName="idleFee" placeholder="R$ Ex.: 2,00 por hora" />
+            </div>
+          </div>
+
+          <div class="form-grid extras-row">
+            <div class="info-group">
+              <label>Serviços adicionais</label>
+              <div class="extras-list">
+                <label class="checkbox-item"
+                  ><input type="checkbox" formControlName="hasWifi" /> Wi-Fi gratuito</label
+                >
+                <label class="checkbox-item"
+                  ><input type="checkbox" formControlName="hasCafe" /> Cafeteria /
+                  Conveniência</label
+                >
+                <label class="checkbox-item"
+                  ><input type="checkbox" formControlName="hasBathroom" /> Banheiro
+                  disponível</label
+                >
+                <label class="checkbox-item"
+                  ><input type="checkbox" formControlName="hasWaitingArea" /> Área de espera</label
+                >
+              </div>
+            </div>
+            <div class="info-group">
+              <label>Informações adicionais (opcional)</label>
+              <textarea
+                formControlName="additionalInfo"
+                maxlength="300"
+                placeholder="Conte-nos mais sobre sua infraestrutura..."
+              ></textarea>
+              <span class="field-count"
+                >{{ infrastructureForm.value.additionalInfo?.length ?? 0 }}/300</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <button class="main-button submit-button" type="submit">Continuar →</button>
+        @if (infrastructureForm.touched && infrastructureForm.invalid) {
+          <span class="form-error">Preencha todos os campos obrigatórios para continuar.</span>
+        }
+      </form>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image"></div>
+      <div class="side-body">
+        <h2>Infraestrutura completa <span class="highlight">faz toda a diferença</span></h2>
+        <p>
+          Fornecer informações detalhadas sobre sua estrutura ajuda motoristas a escolherem seu
+          estabelecimento com mais confiança.
+        </p>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Mais eficiência</strong>
+              <span>Carregadores bem configurados garantem uma experiência rápida e segura.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🛡</div>
+            <div class="benefit-text">
+              <strong>Mais confiança</strong>
+              <span>Informações claras geram credibilidade e confiança entre os motoristas.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⭐</div>
+            <div class="benefit-text">
+              <strong>Destaque seu negócio</strong>
+              <span>Estabelecimentos bem estruturados aparecem nos primeiros resultados.</span>
+            </div>
+          </li>
+        </ul>
+        <div class="info-note">
+          ⓘ Você poderá editar essas informações a qualquer momento na sua conta FyChar.
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>

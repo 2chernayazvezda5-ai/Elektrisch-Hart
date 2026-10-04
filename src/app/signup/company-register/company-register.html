@@ -1,0 +1,129 @@
+<div class="signup-page">
+  <app-signup-header flow="company" [currentStep]="1" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Cadastro de <span class="highlight">Estabelecimento</span></h1>
+      <p class="page-subtitle">Comece informando os dados da sua empresa ou estabelecimento.</p>
+
+      <form [formGroup]="companyForm" (ngSubmit)="submit()">
+        <h3 class="form-title">Dados da empresa</h3>
+        <p class="form-description">
+          Essas informações serão usadas para criar sua conta empresarial.
+        </p>
+
+        <div class="form-grid">
+          <div class="info-group">
+            <label>Nome do estabelecimento *</label>
+            <input type="text" formControlName="name" placeholder="Ex.: Hotel Bela Vista" />
+          </div>
+          <div class="info-group">
+            <label>CNPJ *</label>
+            <input type="text" formControlName="cnpj" placeholder="00.000.000/0000-00" />
+          </div>
+          <div class="info-group">
+            <label>E-mail comercial *</label>
+            <input type="email" formControlName="email" placeholder="contato@seudominio.com.br" />
+          </div>
+          <div class="info-group">
+            <label>Telefone comercial *</label>
+            <input type="tel" formControlName="phone" placeholder="(11) 99999-9999" />
+          </div>
+          <div class="info-group">
+            <label>Senha *</label>
+            <div class="password-field">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Mínimo 8 caracteres"
+              />
+              <button type="button" class="eye" (click)="showPassword = !showPassword">👁</button>
+            </div>
+          </div>
+          <div class="info-group">
+            <label>Confirmar senha *</label>
+            <div class="password-field">
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Digite a senha novamente"
+              />
+              <button
+                type="button"
+                class="eye"
+                (click)="showConfirmPassword = !showConfirmPassword"
+              >
+                👁
+              </button>
+            </div>
+            @if (companyForm.touched && companyForm.hasError('passwordsMismatch')) {
+              <span class="error">As senhas não conferem.</span>
+            }
+          </div>
+        </div>
+
+        <div class="safety-note">
+          <h4>Seus dados estão protegidos</h4>
+          <p>
+            Utilizamos criptografia de ponta a ponta para garantir a segurança total das suas
+            informações de cadastro.
+          </p>
+        </div>
+
+        <button class="main-button submit-button" type="submit">Continuar →</button>
+        @if (companyForm.touched && companyForm.invalid) {
+          <span class="form-error">Preencha todos os campos corretamente para continuar.</span>
+        }
+      </form>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-image"></div>
+      <div class="side-body">
+        <h2>Por que se cadastrar no <span class="highlight">FyChar</span>?</h2>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">📈</div>
+            <div class="benefit-text">
+              <strong>Aumente sua visibilidade</strong>
+              <span
+                >Seu estabelecimento será encontrado por milhares de motoristas de veículos
+                elétricos.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Ofereça seus carregadores</strong>
+              <span
+                >Disponibilize seus carregadores e gere receita enquanto ajuda a impulsionar a
+                mobilidade elétrica.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">📅</div>
+            <div class="benefit-text">
+              <strong>Gerencie com facilidade</strong>
+              <span
+                >Tenha controle total sobre disponibilidade, tarifas de recarga, reservas e muito
+                mais.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🌱</div>
+            <div class="benefit-text">
+              <strong>Cresça com sustentabilidade</strong>
+              <span
+                >Faça parte da revolução da mobilidade limpa e destaque o compromisso verde da sua
+                marca.</span
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+</div>

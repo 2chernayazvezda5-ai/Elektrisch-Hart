@@ -1,0 +1,127 @@
+<div class="signup-page">
+  <app-signup-header flow="company" [currentStep]="2" />
+
+  <main class="signup-content">
+    <section class="left-side">
+      <h1 class="page-title">Localização <span class="highlight">do estabelecimento</span></h1>
+      <p class="page-subtitle">
+        Informe onde seu estabelecimento está localizado para que motoristas possam encontrar você
+        facilmente.
+      </p>
+
+      <form [formGroup]="locationForm" (ngSubmit)="submit()">
+        <div class="location-grid">
+          <div class="info-group span-6">
+            <label>CEP *</label>
+            <div class="zip-row">
+              <input type="text" formControlName="zipCode" placeholder="00000-000" maxlength="9" />
+              <button
+                type="button"
+                class="search-button"
+                (click)="searchZipCode()"
+                [disabled]="searchingZipCode()"
+              >
+                🔍 {{ searchingZipCode() ? 'Buscando...' : 'Buscar CEP' }}
+              </button>
+            </div>
+            @if (zipCodeError()) {
+              <span class="error">{{ zipCodeError() }}</span>
+            }
+          </div>
+
+          <div class="info-group span-6">
+            <label>Endereço *</label>
+            <input type="text" formControlName="street" placeholder="Rua, Avenida, etc." />
+          </div>
+
+          <div class="info-group span-1">
+            <label>Número *</label>
+            <input type="text" formControlName="number" placeholder="Ex.: 123" />
+          </div>
+          <div class="info-group span-3">
+            <label>Complemento</label>
+            <input
+              type="text"
+              formControlName="complement"
+              placeholder="Ex.: Sala 101, Bloco A (opcional)"
+            />
+          </div>
+          <div class="info-group span-2">
+            <label>Bairro *</label>
+            <input type="text" formControlName="district" placeholder="Nome do bairro" />
+          </div>
+
+          <div class="info-group span-3">
+            <label>Cidade *</label>
+            <input type="text" formControlName="city" placeholder="Nome da cidade" />
+          </div>
+          <div class="info-group span-3">
+            <label>Estado *</label>
+            <select formControlName="state">
+              <option value="">Selecione o estado</option>
+              @for (uf of states; track uf) {
+                <option [value]="uf">{{ uf }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="safety-note">
+          <h4>📍 Localização precisa, melhores conexões</h4>
+          <p>
+            Quanto mais precisa for sua localização, mais fácil será para motoristas encontrarem seu
+            estabelecimento e seus carregadores.
+          </p>
+        </div>
+
+        <button class="main-button submit-button" type="submit">Continuar →</button>
+        @if (locationForm.touched && locationForm.invalid) {
+          <span class="form-error">Preencha todos os campos obrigatórios para continuar.</span>
+        }
+      </form>
+    </section>
+
+    <aside class="side-card">
+      <div class="side-body">
+        <h2>Por que a <span class="highlight">localização</span> é importante?</h2>
+        <ul class="benefit-list">
+          <li>
+            <div class="benefit-icon">📍</div>
+            <div class="benefit-text">
+              <strong>Mais visibilidade</strong>
+              <span>Motoristas próximos encontrarão seu estabelecimento com facilidade.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-text">
+              <strong>Rota inteligente</strong>
+              <span
+                >Seu estabelecimento poderá ser incluído nas rotas planejadas pelos
+                motoristas.</span
+              >
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">📈</div>
+            <div class="benefit-text">
+              <strong>Mais oportunidades</strong>
+              <span>Aumente o fluxo de clientes e a utilização dos seus carregadores.</span>
+            </div>
+          </li>
+          <li>
+            <div class="benefit-icon">🛡</div>
+            <div class="benefit-text">
+              <strong>Confiança e segurança</strong>
+              <span>Endereços verificados geram mais confiança para os motoristas.</span>
+            </div>
+          </li>
+        </ul>
+        <p class="side-footer">
+          ✔ Seus dados estão protegidos com
+          <span class="highlight">criptografia de ponta a ponta.</span>
+        </p>
+      </div>
+    </aside>
+  </main>
+</div>
