@@ -3,7 +3,6 @@ import { Login } from './login/login';
 import { AccountType } from './signup/account-type/account-type';
 import { DriverRegister } from './signup/driver-register/driver-register';
 import { DriverVehicle } from './signup/driver-vehicle/driver-vehicle';
-import { EmailVerification } from './signup/email-verification/email-verification';
 import { SignupComplete } from './signup/signup-complete/signup-complete';
 import { CompanyRegister } from './signup/company-register/company-register';
 import { CompanyLocation } from './signup/company-location/company-location';
@@ -24,7 +23,6 @@ export const routes: Routes = [
       { path: 'account-type', component: AccountType },
       { path: 'register', component: DriverRegister },
       { path: 'vehicle', component: DriverVehicle },
-      { path: 'verification', component: EmailVerification },
       { path: 'complete', component: SignupComplete },
       { path: 'company-register', component: CompanyRegister },
 { path: 'company-location', component: CompanyLocation },

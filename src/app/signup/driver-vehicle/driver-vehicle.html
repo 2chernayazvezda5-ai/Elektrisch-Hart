@@ -66,7 +66,9 @@
             e conteúdos personalizados para o seu veículo.
           </div>
         </div>
-
+        @if (mensagemErro) {
+          <p class="error">{{ mensagemErro }}</p>
+      }
         <button class="main-button submit-button" type="submit">Continuar →</button>
       </form>
 
