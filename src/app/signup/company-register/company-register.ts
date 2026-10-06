@@ -3,6 +3,8 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Va
 import { Router } from '@angular/router';
 import { SignupHeader } from '../signup-header/signup-header';
 import { SignupState } from '../signup-state';
+import { MaskDirective } from '../../shared/mask.directive';
+import { cnpjValidator, phoneValidator } from '../../shared/validators';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
@@ -12,7 +14,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 
 @Component({
   selector: 'app-company-register',
-  imports: [ReactiveFormsModule, SignupHeader],
+  imports: [ReactiveFormsModule, SignupHeader, MaskDirective],
   templateUrl: './company-register.html',
   styleUrl: './company-register.scss',
 })
@@ -27,9 +29,9 @@ export class CompanyRegister {
   companyForm = this.formBuilder.group(
     {
       name: [this.signupState.company.name, Validators.required],
-      cnpj: [this.signupState.company.cnpj, Validators.required],
+      cnpj: [this.signupState.company.cnpj, [Validators.required, cnpjValidator]],
       email: [this.signupState.company.email, [Validators.required, Validators.email]],
-      phone: [this.signupState.company.phone, Validators.required],
+      phone: [this.signupState.company.phone, [Validators.required, phoneValidator]],
       password: [this.signupState.company.password, [Validators.required, Validators.minLength(8)]],
       confirmPassword: [this.signupState.company.password, Validators.required],
     },
@@ -42,7 +44,11 @@ export class CompanyRegister {
       return;
     }
     const { confirmPassword, ...data } = this.companyForm.getRawValue();
-    Object.assign(this.signupState.company, data);
+    Object.assign(this.signupState.company, {
+      ...data,
+      cnpj: (data.cnpj ?? '').replace(/[^A-Z0-9]/gi, '').toUpperCase(),
+      phone: (data.phone ?? '').replace(/\D/g, ''),
+    });
     this.router.navigate(['/signup/company-location']);
   }
 }

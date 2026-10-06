@@ -25,7 +25,7 @@
             <div class="info-group">
               <label>Ano</label>
               <select formControlName="vehicleYear">
-                <option value="">Ex: 2024</option>
+                <option value="">Selecione Ano</option>
                 @for (year of years; track year) {
                   <option [value]="year">{{ year }}</option>
                 }
@@ -42,11 +42,32 @@
             </div>
             <div class="info-group">
               <label>Capacidade da bateria (kWh)</label>
-              <input type="text" formControlName="batteryCapacity" placeholder="Ex: 60 kWh" />
+              <input
+                type="text"
+                formControlName="batteryCapacity"
+                inputmode="decimal"
+                placeholder="Ex: 60"
+              />
+              @if (
+                vehicleForm.controls.batteryCapacity.touched &&
+                vehicleForm.controls.batteryCapacity.hasError('number')
+              ) {
+                <span class="error">Informe um número válido.</span>
+              }
             </div>
             <div class="info-group">
               <label>Autonomia aproximada (km)</label>
-              <input type="text" formControlName="range" placeholder="Ex: 450 km" />
+              <input
+                type="text"
+                formControlName="range"
+                inputmode="decimal"
+                placeholder="Ex: 450"
+              />
+              @if (
+                vehicleForm.controls.range.touched && vehicleForm.controls.range.hasError('number')
+              ) {
+                <span class="error">Informe um número válido.</span>
+              }
             </div>
           </div>
 
@@ -57,7 +78,18 @@
             </div>
             <div class="info-group">
               <label>Placa (opcional)</label>
-              <input type="text" formControlName="plate" placeholder="ABC1D23" />
+              <input
+                type="text"
+                formControlName="plate"
+                appMask="plate"
+                maxlength="7"
+                placeholder="ABC1D23"
+              />
+              @if (
+                vehicleForm.controls.plate.touched && vehicleForm.controls.plate.hasError('plate')
+              ) {
+                <span class="error">Placa inválida.</span>
+              }
             </div>
           </div>
 
@@ -66,7 +98,9 @@
             e conteúdos personalizados para o seu veículo.
           </div>
         </div>
-
+        @if (mensagemErro) {
+          <p class="error">{{ mensagemErro }}</p>
+        }
         <button class="main-button submit-button" type="submit">Continuar →</button>
       </form>
 

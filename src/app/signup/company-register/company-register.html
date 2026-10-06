@@ -19,7 +19,16 @@
           </div>
           <div class="info-group">
             <label>CNPJ *</label>
-            <input type="text" formControlName="cnpj" placeholder="00.000.000/0000-00" />
+            <input
+              type="text"
+              formControlName="cnpj"
+              appMask="cnpj"
+              maxlength="18"
+              placeholder="00.000.000/0000-00"
+            />
+            @if (companyForm.controls.cnpj.touched && companyForm.controls.cnpj.hasError('cnpj')) {
+              <span class="error">CNPJ inválido.</span>
+            }
           </div>
           <div class="info-group">
             <label>E-mail comercial *</label>
@@ -27,7 +36,19 @@
           </div>
           <div class="info-group">
             <label>Telefone comercial *</label>
-            <input type="tel" formControlName="phone" placeholder="(11) 99999-9999" />
+            <input
+              type="tel"
+              formControlName="phone"
+              appMask="phone"
+              maxlength="15"
+              inputmode="numeric"
+              placeholder="(11) 99999-9999"
+            />
+            @if (
+              companyForm.controls.phone.touched && companyForm.controls.phone.hasError('phone')
+            ) {
+              <span class="error">Telefone inválido.</span>
+            }
           </div>
           <div class="info-group">
             <label>Senha *</label>

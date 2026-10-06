@@ -3,6 +3,8 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Va
 import { Router } from '@angular/router';
 import { SignupHeader } from '../signup-header/signup-header';
 import { SignupState } from '../signup-state';
+import { MaskDirective } from '../../shared/mask.directive';
+import { birthDateValidator, cpfValidator, phoneValidator } from '../../shared/validators';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
@@ -12,7 +14,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 
 @Component({
   selector: 'app-driver-register',
-  imports: [ReactiveFormsModule, SignupHeader],
+  imports: [ReactiveFormsModule, SignupHeader, MaskDirective],
   templateUrl: './driver-register.html',
   styleUrl: './driver-register.scss',
 })
@@ -28,9 +30,9 @@ export class DriverRegister {
     {
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      cpf: ['', Validators.required],
-      birthDate: ['', Validators.required],
+      phone: ['', [Validators.required, phoneValidator]],
+      cpf: ['', [Validators.required, cpfValidator]],
+      birthDate: ['', [Validators.required, birthDateValidator]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', Validators.required],
     },
@@ -43,7 +45,11 @@ export class DriverRegister {
       return;
     }
     const { confirmPassword, ...data } = this.registerForm.getRawValue();
-    Object.assign(this.signupState.driver, data);
+    Object.assign(this.signupState.driver, {
+      ...data,
+      cpf: (data.cpf ?? '').replace(/\D/g, ''),
+      phone: (data.phone ?? '').replace(/\D/g, ''),
+    });
     this.router.navigate(['/signup/vehicle']);
   }
 }

@@ -1,0 +1,139 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>Olá, {{ establishmentName }}! 👋</h1>
+      <p>Veja como está o desempenho dos seus carregadores hoje.</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="icon-btn">🔔</button>
+      <button type="button" class="icon-btn">?</button>
+      <div class="avatar">👤</div>
+    </div>
+  </header>
+
+  <section class="stats">
+    @for (s of stats; track s.label) {
+      <div class="card stat">
+        <div class="stat-top">
+          <span class="muted upper">{{ s.label }}</span>
+          <span class="stat-icon">⚡</span>
+        </div>
+        <strong class="stat-value">{{ s.value }}</strong>
+        <span class="stat-note" [class.up]="s.up">{{ s.note }}</span>
+      </div>
+    }
+  </section>
+
+  <section class="row row-3">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Uso dos carregadores</h3>
+          <small class="muted">Quantidade de recargas por horário</small>
+        </div>
+        <span class="pill">Hoje ⌄</span>
+      </div>
+      <div class="bars">
+        @for (b of usage; track b.hour) {
+          <div class="bar-col">
+            <div class="bar" [style.height.%]="b.value"></div>
+            <span>{{ b.hour }}</span>
+          </div>
+        }
+      </div>
+      <div class="mini-stats">
+        @for (m of miniStats; track m.label) {
+          <div>
+            <small class="muted">{{ m.label }}</small>
+            <strong [class.highlight]="$first">{{ m.value }}</strong>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Status dos carregadores</h3>
+      <div class="status-body">
+        <div class="donut" [style.background]="donut">
+          <div class="donut-hole">
+            <strong>6/8</strong>
+            <small class="muted">ativos</small>
+          </div>
+        </div>
+        <ul class="legend">
+          @for (s of statuses; track s.label) {
+            <li>
+              <span class="dot" [style.background-color]="s.color"></span>
+              <span>{{ s.label }}</span>
+              <strong>{{ s.value }}</strong>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Últimas reservas</h3>
+        <button type="button" class="link-btn">Ver todas</button>
+      </div>
+      <ul class="reservations">
+        @for (r of reservations; track r.name) {
+          <li>
+            <span class="initial">{{ r.name[0] }}</span>
+            <div class="res-info">
+              <strong>{{ r.name }}</strong>
+              <small class="muted">{{ r.info }}</small>
+              <small class="muted">{{ r.time }}</small>
+            </div>
+            <span class="tag" [class]="'tag ' + r.cls">{{ r.status }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="row row-2">
+    <div class="card">
+      <div class="card-head">
+        <h3>Carregadores</h3>
+        <button type="button" class="link-btn">Ver todos</button>
+      </div>
+      <ul class="chargers">
+        @for (c of chargers; track c.name) {
+          <li>
+            <span class="charger-icon">⚡</span>
+            <div class="charger-name">
+              <strong>{{ c.name }}</strong>
+              <small class="muted">{{ c.spec }}</small>
+            </div>
+            <span class="state" [class]="'state ' + c.cls">● {{ c.status }}</span>
+            <span class="muted place">{{ c.place }}</span>
+            <button type="button" class="icon-btn small">⋮</button>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="side-col">
+      <div class="card">
+        <div class="card-head">
+          <h3>🕐 Horário de Funcionamento</h3>
+          <button type="button" class="link-btn">✎</button>
+        </div>
+        @for (h of hours; track h.days) {
+          <div class="hours">
+            <small class="muted">{{ h.days }}</small>
+            <strong>{{ h.time }}</strong>
+          </div>
+        }
+      </div>
+
+      <div class="card">
+        <h3>Localização do estabelecimento</h3>
+        <small class="muted">{{ address }}</small>
+        <div class="location-box">📍</div>
+      </div>
+    </div>
+  </section>
+</div>

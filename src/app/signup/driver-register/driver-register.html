@@ -22,15 +22,50 @@
           </div>
           <div class="info-group">
             <label>Telefone *</label>
-            <input type="tel" formControlName="phone" placeholder="(11) 99999-9999" />
+            <input
+              type="tel"
+              formControlName="phone"
+              appMask="phone"
+              maxlength="15"
+              inputmode="numeric"
+              placeholder="(11) 99999-9999"
+            />
+            @if (
+              registerForm.controls.phone.touched && registerForm.controls.phone.hasError('phone')
+            ) {
+              <span class="error">Telefone inválido.</span>
+            }
           </div>
           <div class="info-group">
             <label>CPF *</label>
-            <input type="text" formControlName="cpf" placeholder="000.000.000-00" />
+            <input
+              type="text"
+              formControlName="cpf"
+              appMask="cpf"
+              maxlength="14"
+              inputmode="numeric"
+              placeholder="000.000.000-00"
+            />
+            @if (registerForm.controls.cpf.touched && registerForm.controls.cpf.hasError('cpf')) {
+              <span class="error">CPF inválido.</span>
+            }
           </div>
           <div class="info-group">
             <label>Data de nascimento *</label>
-            <input type="text" formControlName="birthDate" placeholder="dd/mm/aaaa" />
+            <input
+              type="text"
+              formControlName="birthDate"
+              appMask="date"
+              maxlength="10"
+              inputmode="numeric"
+              placeholder="dd/mm/aaaa"
+            />
+            @if (
+              registerForm.controls.birthDate.touched &&
+              registerForm.controls.birthDate.hasError('date')
+            ) {
+              <span class="error">Data inválida.</span>
+            }
           </div>
           <div class="info-group">
             <label>Senha *</label>
