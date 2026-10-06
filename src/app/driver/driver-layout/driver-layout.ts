@@ -21,7 +21,9 @@ interface NavSection {
 })
 export class DriverLayout {
   sections: NavSection[] = [
-    { items: [{ icon: '🏠', label: 'Home', route: '/driver/home' }] },
+    {
+      items: [{ icon: '🏠', label: 'Home', route: '/driver/home' }],
+    },
     {
       title: 'Carregadores',
       items: [
