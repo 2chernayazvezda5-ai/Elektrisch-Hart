@@ -8,20 +8,24 @@
       <h1>Bem-vindo <span class="highlight">de volta!</span></h1>
       <p>Entre para continuar sua jornada com mobilidade elétrica inteligente.</p>
 
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="submit()">
       <div class="info-group">
         <label>E-mail</label>
-        <input type="email" placeholder="seu@email.com" />
+        <input type="email" formControlName="email" placeholder="seu@email.com" />
       </div>
       <div class="info-group">
         <label>Senha</label>
-        <input type="password" placeholder="senhasupersegura" />
-      </div>
-
+       <input type="password" formControlName="password" placeholder="senhasupersegura" />
+     </div>
+     
       <a href="/forgot-password">Esqueci minha senha</a>
-      <button>Entrar</button>
-      <div class="separator">
-        <span>ou continue com</span>
-      </div>
+
+     @if (mensagemErro) {
+        <span class="form-error">{{ mensagemErro }}</span>
+      }
+
+     <button   type="submit" [disabled]="enviando">{{ enviando ? 'Entrando...' : 'Entrar' }}</button>
+    </form>
 
       <div class="big-corpo">
         <button><img src="google.png" alt="google logo" />Google</button>
