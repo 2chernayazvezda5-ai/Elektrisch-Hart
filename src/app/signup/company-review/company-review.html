@@ -149,10 +149,15 @@
         </p>
       </div>
 
-      <button class="main-button finish-button" (click)="finish()">
-        <strong>🚀 Concluir cadastro do estabelecimento</strong>
+      @if (mensagemErro) {
+      <span class="form-error">{{ mensagemErro }}</span>
+      }
+
+      <button class="main-button finish-button" (click)="finish()" [disabled]="enviando">
+        <strong>{{ enviando ? 'Enviando...' : '🚀 Concluir cadastro do estabelecimento' }}</strong>
         <small>Seu estabelecimento será analisado e ativado em breve</small>
       </button>
+      
     </section>
 
     <aside class="side-card">

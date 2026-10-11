@@ -1,0 +1,153 @@
+<div class="page">
+  <header class="page-header">
+    <div class="title-block">
+      <span class="title-icon">➤</span>
+      <div>
+        <h1>Explorar carregadores e planejar rota</h1>
+        <p>Encontre carregadores disponíveis perto de você e planeje sua rota com facilidade.</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="icon-btn">🔔</button>
+      <button type="button" class="icon-btn">☀</button>
+      <div class="avatar">👤</div>
+    </div>
+  </header>
+
+  <section class="top-grid">
+    <div class="card search-panel">
+      <div class="tabs">
+        <button type="button" [class.active]="tab === 'find'" (click)="tab = 'find'">
+          Encontrar carregadores
+        </button>
+        <button type="button" [class.active]="tab === 'plan'" (click)="tab = 'plan'">
+          Planejar rota
+        </button>
+      </div>
+
+      <span class="field-label">1. Seu ponto de partida</span>
+      <div class="field">
+        <span class="dot green"></span>
+        <input type="text" value="Minha localização atual" />
+        <span class="field-icon">◎</span>
+      </div>
+
+      <span class="field-label">2. Seu destino</span>
+      <div class="field">
+        <span class="dot yellow"></span>
+        <input type="text" placeholder="Digite o destino" />
+      </div>
+
+      <button type="button" class="link-btn">+ Adicionar parada</button>
+
+      <div class="divider"></div>
+
+      <div class="row-between">
+        <strong>Preferências de rota</strong>
+        <button type="button" class="link-btn">✎ Editar</button>
+      </div>
+      <div class="chips">
+        @for (p of prefs; track p.id) {
+          <button
+            type="button"
+            class="chip"
+            [class.active]="routePref === p.id"
+            (click)="routePref = p.id"
+          >
+            {{ p.icon }} {{ p.label }}
+          </button>
+        }
+      </div>
+
+      <div class="row-between">
+        <span>Apenas carregadores disponíveis</span>
+        <button
+          type="button"
+          class="toggle"
+          [class.on]="onlyAvailable"
+          (click)="onlyAvailable = !onlyAvailable"
+        >
+          <span></span>
+        </button>
+      </div>
+
+      <div class="row-between">
+        <span class="muted">Tipo de conector</span>
+        <select>
+          <option>Todos os tipos</option>
+          @for (c of connectors; track c) {
+            <option>{{ c }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="button" class="main-button">BUSCAR ROTA →</button>
+    </div>
+
+    <!-- MAP: your friend's map component goes inside this tag, e.g.
+         <app-map-slot><app-friend-map /></app-map-slot> -->
+    <app-map-slot />
+  </section>
+
+  <section class="bottom-grid">
+    <div class="card charger-card">
+      <div class="charger-img"></div>
+
+      <div class="charger-info">
+        <h3>{{ charger.name }}</h3>
+        <span class="muted">Endereço: {{ charger.address }}</span>
+        <div class="badges">
+          <span class="badge"
+            >⚡ <strong>{{ charger.power }}</strong> Potência</span
+          >
+          <span class="badge"
+            >🔌 <strong>{{ charger.connector }}</strong> Conector</span
+          >
+          <span class="badge"
+            >🕐 <strong>{{ charger.hours }}</strong> Funcionamento</span
+          >
+        </div>
+      </div>
+
+      <div class="charger-side">
+        <span class="status">{{ charger.status }}</span>
+        <div class="price">
+          {{ charger.price }} <small>{{ charger.unit }}</small>
+        </div>
+        <small class="muted">{{ charger.fee }}</small>
+        <button type="button" class="main-button small">Ver detalhes</button>
+        <button type="button" class="outline-button">Adicionar parada</button>
+      </div>
+    </div>
+
+    <div class="card route-card">
+      <div class="row-between">
+        <strong class="highlight">Sua rota atual</strong>
+        <strong
+          >{{ route.duration }} <small class="muted">({{ route.distance }})</small></strong
+        >
+      </div>
+      <span class="muted">{{ route.stopsLabel }}</span>
+      <ul>
+        @for (s of route.stops; track s.name) {
+          <li><span class="dot" [class]="'dot ' + s.color"></span>{{ s.name }}</li>
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="card filters-bar">
+    <strong>Filtros rápidos</strong>
+    <div class="chips">
+      @for (f of filters; track f.label) {
+        <button type="button" class="chip" [class.active]="f.active" (click)="toggleFilter(f)">
+          @if (f.dot) {
+            <span class="dot" [class]="'dot ' + f.dot"></span>
+          }
+          {{ f.label }}
+        </button>
+      }
+    </div>
+    <button type="button" class="clear-btn" (click)="clearFilters()">Limpar Filtros</button>
+  </section>
+</div>

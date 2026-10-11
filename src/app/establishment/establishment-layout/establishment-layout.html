@@ -1,0 +1,34 @@
+<aside class="sidebar">
+  <div class="logo">
+    <span class="logo-img"></span>
+    <span>Fy<span class="highlight">Char</span></span>
+  </div>
+
+  <div class="picker">
+    <div>
+      <small>ESTABELECIMENTO</small>
+      <strong>{{ establishmentName }}</strong>
+    </div>
+    <span>⌄</span>
+  </div>
+
+  @for (item of items; track item.label) {
+    @if (item.route) {
+      <a class="nav-item" [routerLink]="item.route" routerLinkActive="active">
+        <span class="icon">{{ item.icon }}</span
+        >{{ item.label }}
+      </a>
+    } @else {
+      <button type="button" class="nav-item">
+        <span class="icon">{{ item.icon }}</span
+        >{{ item.label }}
+      </button>
+    }
+  }
+
+  <button type="button" class="nav-item support"><span class="icon">💬</span>Suporte FyChar</button>
+</aside>
+
+<div class="content">
+  <router-outlet />
+</div>

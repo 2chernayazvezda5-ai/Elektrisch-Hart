@@ -1,0 +1,57 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <small class="welcome">Seja bem-vindo,</small>
+      <h1>{{ userName }}!</h1>
+      <p>Aqui você aprende, encontra e compartilha energia.</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="icon-btn">🔔</button>
+      <button type="button" class="icon-btn">☀</button>
+      <div class="avatar">👤</div>
+    </div>
+  </header>
+
+  <section class="card tutorial">
+    <div class="tutorial-head">
+      <div>
+        <h2>Aprenda a usar o <span class="highlight">FyChar</span></h2>
+        <p>Siga o tutorial rápido e descubra tudo que você pode fazer.</p>
+      </div>
+      <small>📖 Tutorial rápido • 5 min</small>
+    </div>
+
+    <div class="tutorial-body">
+      <div class="steps">
+        @for (s of steps; track s.title; let i = $index) {
+          <button type="button" class="step" [class.active]="i === current" (click)="select(i)">
+            <span class="num">{{ i + 1 }}</span>
+            <span class="step-text">
+              <strong>{{ s.title }}</strong>
+              <span>{{ s.short }}</span>
+            </span>
+          </button>
+        }
+      </div>
+
+      <div class="detail">
+        <h3>{{ current + 1 }}. {{ step.title }}</h3>
+        <p>{{ step.intro }}</p>
+        <ul class="features">
+          @for (f of step.features; track f.title) {
+            <li>
+              <span class="feature-icon">{{ f.icon }}</span>
+              <div>
+                <strong>{{ f.title }}</strong>
+                <span>{{ f.text }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+        <button type="button" class="main-button next-button" (click)="next()">
+          {{ current === steps.length - 1 ? 'Recomeçar' : 'Próximo passo →' }}
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,32 @@
+@use '../../shared/sidebar';
+
+.logo-img {
+  background-image: url('../../../assets/NagiCar.jpg');
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: var(--card-bg);
+
+  small {
+    display: block;
+    color: var(--muted-text);
+    font-size: 10px;
+  }
+
+  strong {
+    font-size: 14px;
+  }
+}
+
+.support {
+  margin-top: auto;
+  border-color: var(--border);
+  background-color: var(--card-bg);
+}

@@ -5,10 +5,12 @@ import { SignupHeader } from '../signup-header/signup-header';
 import { SignupState } from '../signup-state';
 import { MotoristaApi } from '../../services/motorista-api';
 import { CadastroMotoristaRequest } from '../../models/cadastro-motorista.model';
+import { MaskDirective } from '../../shared/mask.directive';
+import { plateValidator, positiveNumberValidator } from '../../shared/validators';
 
 @Component({
   selector: 'app-driver-vehicle',
-  imports: [ReactiveFormsModule, SignupHeader],
+  imports: [ReactiveFormsModule, SignupHeader, MaskDirective],
   templateUrl: './driver-vehicle.html',
   styleUrl: './driver-vehicle.scss',
 })
@@ -26,16 +28,21 @@ export class DriverVehicle {
     vehicleModel: [''],
     vehicleYear: [''],
     connectorType: [''],
-    batteryCapacity: [''],
-    range: [''],
+    batteryCapacity: ['', positiveNumberValidator],
+    range: ['', positiveNumberValidator],
     color: [''],
-    plate: [''],
+    plate: ['', plateValidator],
   });
 
   enviando = false;
   mensagemErro = '';
 
   submit() {
+    if (this.vehicleForm.invalid) {
+      this.vehicleForm.markAllAsTouched();
+      return;
+    }
+
     Object.assign(this.signupState.driver, this.vehicleForm.getRawValue());
 
     this.mensagemErro = '';

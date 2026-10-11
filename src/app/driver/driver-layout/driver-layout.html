@@ -1,0 +1,34 @@
+<aside class="sidebar">
+  <div class="logo">
+    <span class="logo-img"></span>
+    <span>Fy<span class="highlight">Char</span></span>
+  </div>
+
+  @for (section of sections; track $index) {
+    @if (section.title) {
+      <div class="nav-section">{{ section.title }}</div>
+    }
+    @for (item of section.items; track item.label) {
+      @if (item.route) {
+        <a
+          class="nav-item"
+          [class.danger]="item.danger"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+        >
+          <span class="icon">{{ item.icon }}</span
+          >{{ item.label }}
+        </a>
+      } @else {
+        <button type="button" class="nav-item">
+          <span class="icon">{{ item.icon }}</span
+          >{{ item.label }}
+        </button>
+      }
+    }
+  }
+</aside>
+
+<div class="content">
+  <router-outlet />
+</div>

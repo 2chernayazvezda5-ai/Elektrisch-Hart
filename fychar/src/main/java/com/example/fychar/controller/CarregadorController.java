@@ -62,8 +62,9 @@ public class CarregadorController {
 
     /**
      * POST /api/carregadores
-     * Recebe um JSON no corpo da requisição (@RequestBody) e o Spring
-     * desserializa automaticamente para um objeto Carregador.
+     * Recebe um JSON na requisição e o Spring
+     * "transforma"( sei que tem um termo certo mas não lembro qual é)
+     * automaticamente para um objeto Carregador.
      *
      * @Valid dispara as validações declaradas na classe Carregador
      *        (@NotBlank, @NotNull). Se algum campo obrigatório vier em branco,

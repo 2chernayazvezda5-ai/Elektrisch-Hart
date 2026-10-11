@@ -1,0 +1,90 @@
+:host {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 12px;
+  background-color: var(--cool-black);
+  border-right: 2px solid var(--mcqueen);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px 20px;
+  font-size: 20px;
+  font-weight: 800;
+
+  .logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+.nav-section {
+  margin-top: 16px;
+  padding: 0 12px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-text);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--simple-text);
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #16161a;
+  }
+
+  &.active {
+    background-color: #2a2410;
+    border-color: var(--mcqueen);
+    color: var(--mcqueen);
+  }
+
+  &.danger {
+    color: #ff5252;
+  }
+
+  .icon {
+    width: 20px;
+    text-align: center;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
