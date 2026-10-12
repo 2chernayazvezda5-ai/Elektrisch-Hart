@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { MapSlot } from '../../shared/map-slot/map-slot';
+import { MapaComponent } from '../../mapa/mapa.component';
 
 @Component({
   selector: 'app-driver-map',
-  imports: [MapSlot],
+  imports: [MapSlot, MapaComponent],
   templateUrl: './driver-map.html',
   styleUrl: './driver-map.scss',
 })

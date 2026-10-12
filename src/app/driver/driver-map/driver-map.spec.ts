@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DriverMap } from './driver-map';
-
 describe('DriverMap', () => {
   let component: DriverMap;
   let fixture: ComponentFixture<DriverMap>;

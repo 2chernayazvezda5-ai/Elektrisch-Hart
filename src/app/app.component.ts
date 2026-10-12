@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MapaComponent } from './mapa/mapa.component';
 
-/** por enquanto só esta hospedando o mapa , ao integrar com o resto aqui vai ficar tudo para o roteamento*/
+/** só esta hospedando o mapa**/
 
 @Component({
   selector: 'app-root',

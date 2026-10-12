@@ -22,9 +22,10 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        // E-mail inexistente e senha errada caem na MESMA mensagem de propósito:
-        // dizer qual dos dois errou ajudaria quem tenta descobrir e-mails cadastrados.
+        // E-mail inexistente e senha errada caem na msm mensagem.
         // matches() compara a senha digitada com o hash BCrypt guardado no banco.
+        // Acredito que não irei adicionar mais coisas relacionadas a segurança açem
+        // disso.
         Usuario usuario = usuarioRepository.findByEmail(request.email())
                 .filter(u -> passwordEncoder.matches(request.senha(), u.getSenha()))
                 .orElseThrow(() -> new ResponseStatusException(
