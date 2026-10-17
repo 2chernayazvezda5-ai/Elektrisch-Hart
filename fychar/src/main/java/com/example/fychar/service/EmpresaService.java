@@ -1,6 +1,5 @@
 package com.example.fychar.service;
 
-import com.example.fychar.controller.CarregadorController;
 import com.example.fychar.dto.CadastroEmpresaRequest;
 import com.example.fychar.dto.EnderecoDTO;
 import com.example.fychar.dto.InfraestruturaDTO;
@@ -9,6 +8,8 @@ import com.example.fychar.model.entity.Endereco;
 import com.example.fychar.model.entity.PontoRecarga;
 import com.example.fychar.repository.EmpresaRepository;
 import com.example.fychar.repository.UsuarioRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,18 +20,21 @@ import java.math.BigDecimal;
 @Service
 public class EmpresaService {
 
-    private final CarregadorController carregadorController;// talvez seja usado então ja vai ficar aqui
+    private static final Logger log = LoggerFactory.getLogger(EmpresaService.class);
+
     private final EmpresaRepository empresaRepository;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final GeocodingService geocodingService;
 
     public EmpresaService(EmpresaRepository empresaRepository,
             UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder, CarregadorController carregadorController) {
+            PasswordEncoder passwordEncoder,
+            GeocodingService geocodingService) {
         this.empresaRepository = empresaRepository;
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.carregadorController = carregadorController;
+        this.geocodingService = geocodingService;
     }
 
     public Empresa cadastrar(CadastroEmpresaRequest req) {
@@ -54,8 +58,10 @@ public class EmpresaService {
         empresa.setDescricao(req.descricao());
 
         EnderecoDTO e = req.endereco();
-        empresa.setEndereco(new Endereco(e.cep(), e.rua(), e.numero(),
-                e.complemento(), e.bairro(), e.cidade(), e.estado()));
+        Endereco endereco = new Endereco(e.cep(), e.rua(), e.numero(),
+                e.complemento(), e.bairro(), e.cidade(), e.estado());
+        definirCoordenadas(endereco, e);
+        empresa.setEndereco(endereco);
 
         InfraestruturaDTO i = req.infraestrutura();
         empresa.setHorarioFuncionamento(i.horarioFuncionamento());
@@ -76,7 +82,7 @@ public class EmpresaService {
         empresa.adicionarPontoRecarga(ponto);
 
         // Um save() insere em usuario, empresa e ponto_recarga na mesma ação.
-        // Seria ,uito util saber da existencia disso no semestre passado.
+        // Seria muito util saber da existencia disso no semestre passado.
         return empresaRepository.save(empresa);
     }
 
@@ -96,5 +102,24 @@ public class EmpresaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Preço por kWh inválido. Use o formato 1,99.");
         }
+    }
+
+    /**
+     * Usa as coordenadas informadas; se não vieram, tenta descobrir pelo endereço.
+     */
+    private void definirCoordenadas(Endereco endereco, EnderecoDTO dto) {
+        if (dto.latitude() != null && dto.longitude() != null) {
+            if (Math.abs(dto.latitude()) > 90 || Math.abs(dto.longitude()) > 180) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Latitude ou longitude fora do intervalo válido.");
+            }
+            endereco.setCoordenadas(dto.latitude(), dto.longitude());
+            return;
+        }
+
+        geocodingService.buscar(endereco).ifPresentOrElse(
+                c -> endereco.setCoordenadas(c.latitude(), c.longitude()),
+                () -> log.warn("Endereço não localizado no Nominatim: {}, {} - {}",
+                        endereco.getRua(), endereco.getCidade(), endereco.getEstado()));
     }
 }

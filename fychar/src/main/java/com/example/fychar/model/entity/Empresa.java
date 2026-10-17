@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "empresa")
+@Table(name = "empresa", indexes = @Index(name = "idx_empresa_coordenadas", columnList = "latitude, longitude"))
 @DiscriminatorValue("EMPRESA")
 public class Empresa extends Usuario {
 

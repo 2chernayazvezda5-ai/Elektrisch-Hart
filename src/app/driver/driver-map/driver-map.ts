@@ -1,14 +1,27 @@
-import { Component } from '@angular/core';
-import { MapSlot } from '../../shared/map-slot/map-slot';
+import { Component, inject } from '@angular/core';
 import { MapaComponent } from '../../mapa/mapa.component';
+import { MapaBusca } from '../../services/mapa-busca';
 
 @Component({
   selector: 'app-driver-map',
-  imports: [MapSlot, MapaComponent],
+  imports: [MapaComponent],
   templateUrl: './driver-map.html',
   styleUrl: './driver-map.scss',
 })
 export class DriverMap {
+  busca = inject(MapaBusca);
+
+  raios = [1, 2, 5, 10, 20, 50];
+  raioKm = 5;
+
+  definirRaio(event: Event) {
+    this.raioKm = Number((event.target as HTMLSelectElement).value);
+  }
+
+  buscarCarregadores() {
+    this.busca.solicitarBusca(this.raioKm);
+  }
+
   tab: 'find' | 'plan' = 'find';
   routePref = 'fast';
   onlyAvailable = true;

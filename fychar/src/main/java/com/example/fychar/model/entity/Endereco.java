@@ -22,6 +22,8 @@ public class Endereco {
     private String bairro;
     private String cidade;
     private String estado;
+    private Double latitude;
+    private Double longitude;
 
     protected Endereco() {
         // exigido pelo JPA
@@ -36,6 +38,22 @@ public class Endereco {
         this.bairro = bairro;
         this.cidade = cidade;
         this.estado = estado;
+    }
+
+    // vai ser para o caso do nominatim não conseguir definir o local usando o
+    // endereço que tiver sido passado,
+    // então vou colocar um campo para colocar essas informações em caso de erro.
+    public void setCoordenadas(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
     }
 
     public String getCep() {

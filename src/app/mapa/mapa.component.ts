@@ -1,61 +1,50 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, DestroyRef, OnDestroy, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
+import { EstabelecimentoApi } from '../services/estabelecimento-api';
+import { MapaBusca } from '../services/mapa-busca';
+import { EstabelecimentoProximo } from '../models/estabelecimento.model';
 
-// Quando a integração com os carregadores voltar, reativar estes imports:
-// import { CarregadorService } from '../../services/carregador.service';
-// import { Carregador, CarregadorProximo } from '../../models/carregador.model';
-
-/**
- * Componente responsável apenas pela navegação do mapa por enquanto:
- * - Renderizar o mapa Leaflet/OpenStreetMap
- * - Centralizar na localização do usuário (geolocalização)
- * - Capturar cliques no mapa para marcar um ponto
- *
- * A busca/exibição de carregadores foi deixada comentada mais abaixo,
- * pronta para ser reativada quando o backend for integrado.
- *
- * O futuro menu lateral vai se comunicar com este componente por um
- * service compartilhado (ainda não criado). Quando ele existir,
- * latitudeSelecionada/longitudeSelecionada devem passar a morar nesse
- * service em vez de aqui , hoje ficam neste componente só para o mapa
- * continuar funcionando sozinho enquanto o menu não existe.
- */
 @Component({
   selector: 'app-mapa',
   standalone: true,
   templateUrl: './mapa.component.html',
   styleUrl: './mapa.component.css'
 })
-export class MapaComponent implements AfterViewInit {
+export class MapaComponent implements AfterViewInit, OnDestroy {
+
+  private readonly api = inject(EstabelecimentoApi);
+  private readonly busca = inject(MapaBusca);
+  private readonly destroyRef = inject(DestroyRef);
 
   private map!: L.Map;
 
-  // Marcadores dos carregadores vindos da API (usado só quando a
-  // integração com o backend estiver ativa novamente)
-  // private marcadoresCarregadores: L.Marker[] = [];
-
-  // Marcador temporário do ponto clicado pelo usuário no mapa
+  // Todos os marcadores de resultado ficam neste grupo: limpar a busca anterior
+  // é uma chamada só (clearLayers), sem precisar guardar uma lista na mão.
+  private camadaResultados = L.layerGroup();
+  private circuloBusca: L.Circle | null = null;
   private marcadorSelecionado: L.Marker | null = null;
+  private buscaEmAndamento?: Subscription;
 
-  // Coordenadas do ponto que o usuário clicou no mapa.
-  // TODO: mover para o service compartilhado quando o menu lateral existir.
-  latitudeSelecionada: number | null = null;
-  longitudeSelecionada: number | null = null;
-
-  mensagemStatus = '';
-
-  // constructor(private carregadorService: CarregadorService) {}
+  // Centro da busca: a localização do usuário ou o último ponto clicado (o clique vence)
+  private origem: L.LatLng | null = null;
 
   ngAfterViewInit(): void {
     this.inicializarMapa();
     this.obterLocalizacaoUsuario();
-    // this.carregarTodosCarregadores();
+
+    // Fica "escutando" o botão de buscar do painel lateral
+    this.busca.buscaSolicitada$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(raioKm => this.buscarProximos(raioKm));
   }
 
-  /**
-   * Cria a instância do mapa Leaflet e define a camada de tiles do
-   * OpenStreetMap.
-   */
+  ngOnDestroy(): void {
+    this.buscaEmAndamento?.unsubscribe();
+    this.map?.remove(); // libera o Leaflet (listeners, tiles) ao sair da tela
+  }
+
   private inicializarMapa(): void {
     this.map = L.map('mapa').setView([-22.8219, -47.2669], 12);
 
@@ -64,15 +53,16 @@ export class MapaComponent implements AfterViewInit {
       maxZoom: 19
     }).addTo(this.map);
 
+    this.camadaResultados.addTo(this.map);
+
     this.map.on('click', (evento: L.LeafletMouseEvent) => {
       this.selecionarPontoNoMapa(evento.latlng.lat, evento.latlng.lng);
     });
   }
 
-  /** Tenta centralizar o mapa na localização do usuário via Geolocation API */
   private obterLocalizacaoUsuario(): void {
     if (!navigator.geolocation) {
-      this.mensagemStatus = 'Geolocalização não suportada.';
+      this.busca.status.set('Geolocalização não suportada. Clique no mapa para escolher o ponto de busca.');
       return;
     }
 
@@ -80,6 +70,7 @@ export class MapaComponent implements AfterViewInit {
       (posicao) => {
         const lat = posicao.coords.latitude;
         const lon = posicao.coords.longitude;
+        this.origem = L.latLng(lat, lon);
         this.map.setView([lat, lon], 14);
 
         L.marker([lat, lon])
@@ -88,15 +79,14 @@ export class MapaComponent implements AfterViewInit {
           .openPopup();
       },
       () => {
-        this.mensagemStatus = 'Permissão de localização negada.';
+        this.busca.status.set('Localização não permitida. Clique no mapa para escolher o ponto de busca.');
       }
     );
   }
 
-  /** Desenha/move o marcador temporário de seleção e guarda as coordenadas */
+  /** Marca o ponto clicado e passa a usá-lo como centro da busca */
   private selecionarPontoNoMapa(lat: number, lon: number): void {
-    this.latitudeSelecionada = lat;
-    this.longitudeSelecionada = lon;
+    this.origem = L.latLng(lat, lon);
 
     if (this.marcadorSelecionado) {
       this.marcadorSelecionado.setLatLng([lat, lon]);
@@ -109,79 +99,73 @@ export class MapaComponent implements AfterViewInit {
     }
   }
 
-  // -----------------------------------------------------------------
-  // Integração com os carregadores (backend) — desativada por enquanto.
-  // Reative os métodos abaixo, os imports no topo e a chamada a
-  // carregarTodosCarregadores() no ngAfterViewInit quando o backend
-  // estiver pronto para ser integrado.
-  // -----------------------------------------------------------------
+  private buscarProximos(raioKm: number): void {
+    // Sem localização e sem clique, usa o centro do que está visível no mapa
+    const centro = this.origem ?? this.map.getCenter();
 
-  // carregarTodosCarregadores(): void {
-  //   this.carregadorService.listarTodos().subscribe({
-  //     next: (carregadores) => this.desenharMarcadoresCarregadores(carregadores),
-  //     error: () => this.mensagemStatus = 'Erro ao carregar carregadores da API.'
-  //   });
-  // }
+    this.busca.buscando.set(true);
+    this.busca.status.set('');
 
-  // private desenharMarcadoresCarregadores(carregadores: (Carregador | CarregadorProximo)[]): void {
-  //   this.marcadoresCarregadores.forEach(marker => this.map.removeLayer(marker));
-  //   this.marcadoresCarregadores = [];
-  //
-  //   carregadores.forEach(c => {
-  //     const marker = L.marker([c.latitude, c.longitude]).addTo(this.map);
-  //
-  //     const distanciaHtml = 'distanciaKm' in c
-  //       ? `<br>Distância: ${(c as CarregadorProximo).distanciaKm} km`
-  //       : '';
-  //
-  //     marker.bindPopup(`
-  //       <strong>${c.nome}</strong><br>
-  //       Potência: ${c.potenciaKw} kW<br>
-  //       Conector: ${this.formatarConector(c.tipoConector)}
-  //       ${distanciaHtml}
-  //     `);
-  //
-  //     this.marcadoresCarregadores.push(marker);
-  //   });
-  // }
+    // Se o usuário clicar em buscar de novo, cancela a requisição anterior
+    this.buscaEmAndamento?.unsubscribe();
+    this.buscaEmAndamento = this.api.buscarProximos(centro.lat, centro.lng, raioKm).subscribe({
+      next: (resultados) => {
+        this.desenharResultados(resultados);
+        this.desenharCirculo(centro, raioKm);
+        this.busca.status.set(
+          resultados.length === 0
+            ? `Nenhum estabelecimento em até ${raioKm} km.`
+            : `${resultados.length} estabelecimento(s) em até ${raioKm} km.`
+        );
+        this.busca.buscando.set(false);
+      },
+      error: () => {
+        this.busca.status.set('Não foi possível buscar carregadores. Tente novamente.');
+        this.busca.buscando.set(false);
+      }
+    });
+  }
 
-  // private formatarConector(tipo: string): string {
-  //   const nomes: Record<string, string> = {
-  //     TIPO_2: 'Tipo 2',
-  //     CCS: 'CCS',
-  //     CHADEMO: 'CHAdeMO'
-  //   };
-  //   return nomes[tipo] ?? tipo;
-  // }
+  private desenharResultados(lista: EstabelecimentoProximo[]): void {
+    this.camadaResultados.clearLayers();
 
-  // buscarCarregadoresProximos(raioKm: number): void {
-  //   if (this.latitudeSelecionada === null || this.longitudeSelecionada === null) {
-  //     this.mensagemStatus = 'Clique em um ponto do mapa antes de buscar.';
-  //     return;
-  //   }
-  //
-  //   this.carregadorService.buscarProximos(
-  //     this.latitudeSelecionada,
-  //     this.longitudeSelecionada,
-  //     raioKm
-  //   ).subscribe({
-  //     next: (proximos: CarregadorProximo[]) => {
-  //       this.desenharMarcadoresCarregadores(proximos);
-  //       this.mensagemStatus = `${proximos.length} carregador(es) encontrado(s) em um raio de ${raioKm} km.`;
-  //     },
-  //     error: () => this.mensagemStatus = 'Erro ao buscar carregadores próximos.'
-  //   });
-  // }
+    lista.forEach(e => {
+      L.marker([e.latitude, e.longitude])
+        .bindPopup(this.montarPopup(e))
+        .addTo(this.camadaResultados);
+    });
+  }
 
-  // aoCadastrarCarregador(novoCarregador: Carregador): void {
-  //   const marker = L.marker([novoCarregador.latitude, novoCarregador.longitude]).addTo(this.map);
-  //   marker.bindPopup(`
-  //     <strong>${novoCarregador.nome}</strong><br>
-  //     Potência: ${novoCarregador.potenciaKw} kW<br>
-  //     Conector: ${this.formatarConector(novoCarregador.tipoConector)}
-  //   `).openPopup();
-  //
-  //   this.marcadoresCarregadores.push(marker);
-  //   this.mensagemStatus = `Carregador "${novoCarregador.nome}" cadastrado com sucesso!`;
-  // }
+  /** Círculo mostrando a área pesquisada; o mapa dá zoom para enquadrá-lo */
+  private desenharCirculo(centro: L.LatLng, raioKm: number): void {
+    this.circuloBusca?.remove();
+    this.circuloBusca = L.circle(centro, { radius: raioKm * 1000, weight: 1 }).addTo(this.map);
+    this.map.fitBounds(this.circuloBusca.getBounds());
+  }
+
+  private montarPopup(e: EstabelecimentoProximo): string {
+    const pontos = e.pontosRecarga.map(p => {
+      const preco = p.gratuito
+        ? 'Gratuito'
+        : p.precoPorKwh != null
+          ? `R$ ${p.precoPorKwh.toFixed(2).replace('.', ',')}/kWh`
+          : 'Preço não informado';
+      return `<li>${p.quantidade}× ${this.esc(p.potencia)} · ${this.esc(p.tipoConector)} · ${preco}</li>`;
+    }).join('');
+
+    return `
+      <strong>${this.esc(e.nome)}</strong><br>
+      ${this.esc(e.categoria)} · ${e.distanciaKm} km<br>
+      Horário: ${this.esc(e.horarioFuncionamento)}
+      <ul style="margin:6px 0 0;padding-left:18px">${pontos}</ul>
+    `;
+  }
+
+  /** Os textos vêm de formulários: sem isso, um "<" no nome quebraria o popup */
+  private esc(texto: string | null | undefined): string {
+    const trocas: Record<string, string> = {
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    };
+    return (texto ?? '').replace(/[&<>"']/g, c => trocas[c]);
+  }
 }

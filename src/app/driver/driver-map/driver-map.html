@@ -80,8 +80,27 @@
           }
         </select>
       </div>
+      @if (tab === 'find') {
+  <div class="row-between">
+    <span class="muted">Raio de busca</span>
+    <select (change)="definirRaio($event)">
+      @for (r of raios; track r) {
+        <option [value]="r" [selected]="r === raioKm">{{ r }} km</option>
+      }
+    </select>
+  </div>
 
+  <button type="button" class="main-button" [disabled]="busca.buscando()" (click)="buscarCarregadores()">
+    {{ busca.buscando() ? 'BUSCANDO...' : 'BUSCAR CARREGADORES →' }}
+  </button>
+
+  @if (busca.status()) {
+    <span class="muted">{{ busca.status() }}</span>
+  }
+}
+    @if(tab === 'plan'){
       <button type="button" class="main-button">BUSCAR ROTA →</button>
+    }
     </div>
 
 
