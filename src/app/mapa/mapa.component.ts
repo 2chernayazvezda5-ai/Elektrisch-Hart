@@ -3,8 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { EstabelecimentoApi } from '../services/estabelecimento-api';
+import { Localizacao, Posicao } from '../services/localizacao';
 import { MapaBusca } from '../services/mapa-busca';
 import { EstabelecimentoProximo } from '../models/estabelecimento.model';
+
+// Onde o mapa sempre começa: Facens, em Sorocaba.
+// TODO: troque pelas coordenadas exatas do campus (veja a explicação abaixo do código).
+const FACENS: L.LatLngTuple = [-23.4707, -47.4251];
+const ZOOM_INICIAL = 15;
 
 @Component({
   selector: 'app-mapa',
@@ -16,6 +22,7 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
 
   private readonly api = inject(EstabelecimentoApi);
   private readonly busca = inject(MapaBusca);
+  private readonly localizacao = inject(Localizacao);
   private readonly destroyRef = inject(DestroyRef);
 
   private map!: L.Map;
@@ -32,7 +39,18 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.inicializarMapa();
-    this.obterLocalizacaoUsuario();
+
+    // Se o login já pediu a localização, isto não pede de novo (útil para quem abre /mapa direto)
+    this.localizacao.solicitar();
+
+    // O BehaviorSubject entrega a posição na hora, se ela já existir, e avisa quando chegar
+    this.localizacao.posicao$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(pos => {
+        if (pos) {
+          this.mostrarPosicaoDoUsuario(pos);
+        }
+      });
 
     // Fica "escutando" o botão de buscar do painel lateral
     this.busca.buscaSolicitada$
@@ -46,7 +64,7 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
   }
 
   private inicializarMapa(): void {
-    this.map = L.map('mapa').setView([-22.8219, -47.2669], 12);
+    this.map = L.map('mapa').setView(FACENS, ZOOM_INICIAL);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -60,28 +78,19 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private obterLocalizacaoUsuario(): void {
-    if (!navigator.geolocation) {
-      this.busca.status.set('Geolocalização não suportada. Clique no mapa para escolher o ponto de busca.');
-      return;
+  /** Marca onde o usuário está, sem mover o mapa */
+  private mostrarPosicaoDoUsuario(pos: Posicao): void {
+    const ponto = L.latLng(pos.latitude, pos.longitude);
+
+    // Um clique do usuário no mapa vale mais que a localização automática
+    if (!this.marcadorSelecionado) {
+      this.origem = ponto;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (posicao) => {
-        const lat = posicao.coords.latitude;
-        const lon = posicao.coords.longitude;
-        this.origem = L.latLng(lat, lon);
-        this.map.setView([lat, lon], 14);
-
-        L.marker([lat, lon])
-          .addTo(this.map)
-          .bindPopup('Você está aqui')
-          .openPopup();
-      },
-      () => {
-        this.busca.status.set('Localização não permitida. Clique no mapa para escolher o ponto de busca.');
-      }
-    );
+    // De propósito sem setView() e sem openPopup(): os dois levariam o mapa até o
+    // usuário (o popup aberto faz o Leaflet deslocar a tela para mostrá-lo), e o
+    // mapa precisa começar sempre na Facens.
+    L.marker(ponto).addTo(this.map).bindPopup('Você está aqui');
   }
 
   /** Marca o ponto clicado e passa a usá-lo como centro da busca */

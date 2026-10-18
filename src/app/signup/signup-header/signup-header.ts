@@ -21,6 +21,7 @@ export class SignupHeader {
   }
 
   goBack() {
+
     this.location.back();
   }
 }
