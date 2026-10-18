@@ -35,9 +35,9 @@ export class Login {
     const { email, password } = this.loginForm.getRawValue();
 
     this.auth.login({ email, senha: password }).subscribe({
-      next: () => {
+      next: (usuario) => {
         this.enviando = false;
-        this.router.navigate(['/mapa']);
+        this.router.navigate([usuario.tipo === 'EMPRESA' ? '/establishment' : '/driver']);
       },
       error: (err) => {
         this.enviando = false;

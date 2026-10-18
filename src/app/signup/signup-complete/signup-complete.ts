@@ -19,8 +19,7 @@ export class SignupComplete {
     return `${this.driver.vehicleBrand} ${this.driver.vehicleModel}`.trim() || '—';
   }
 
-  goToDashboard() {
-    // TODO: create the dashboard route
-    this.router.navigate(['/dashboard']);
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }
