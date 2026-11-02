@@ -8,12 +8,21 @@ export class EstabelecimentoApi {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:8080/api/estabelecimentos';
 
-  buscarProximos(latitude: number, longitude: number, raioKm: number): Observable<EstabelecimentoProximo[]> {
-    const params = new HttpParams()
-      .set('latitude', latitude)
-      .set('longitude', longitude)
-      .set('raio', raioKm);
+  buscarProximos(
+  latitude: number,
+  longitude: number,
+  raioKm: number,
+  conector?: string | null,
+): Observable<EstabelecimentoProximo[]> {
+  let params = new HttpParams()
+    .set('latitude', latitude)
+    .set('longitude', longitude)
+    .set('raio', raioKm);
 
-    return this.http.get<EstabelecimentoProximo[]>(`${this.apiUrl}/proximos`, { params });
+  if (conector) {
+    params = params.set('conector', conector);
   }
+
+  return this.http.get<EstabelecimentoProximo[]>(`${this.apiUrl}/proximos`, { params });
+}
 }

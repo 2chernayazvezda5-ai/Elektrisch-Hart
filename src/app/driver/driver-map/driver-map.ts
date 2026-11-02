@@ -18,9 +18,15 @@ export class DriverMap {
     this.raioKm = Number((event.target as HTMLSelectElement).value);
   }
 
-  buscarCarregadores() {
-    this.busca.solicitarBusca(this.raioKm);
+  conectorSelecionado = ''; // vazio para todos os tipos
+
+  definirConector(event: Event) {
+    this.conectorSelecionado = (event.target as HTMLSelectElement).value;
   }
+
+  buscarCarregadores() {
+    this.busca.solicitarBusca(this.raioKm, this.conectorSelecionado || null);
+  } 
 
   tab: 'find' | 'plan' = 'find';
   routePref = 'fast';

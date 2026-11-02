@@ -26,7 +26,7 @@ public class Endereco {
     private Double longitude;
 
     protected Endereco() {
-        // exigido pelo JPA
+
     }
 
     public Endereco(String cep, String rua, String numero, String complemento,

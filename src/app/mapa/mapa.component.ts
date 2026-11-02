@@ -4,8 +4,8 @@ import { Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { EstabelecimentoApi } from '../services/estabelecimento-api';
 import { Localizacao, Posicao } from '../services/localizacao';
-import { MapaBusca } from '../services/mapa-busca';
 import { EstabelecimentoProximo } from '../models/estabelecimento.model';
+import { MapaBusca, PedidoBusca } from '../services/mapa-busca';
 
 // Onde o mapa sempre começa: Facens, em Sorocaba.
 // TODO: troque pelas coordenadas exatas do campus (veja a explicação abaixo do código).
@@ -37,26 +37,33 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
   // Centro da busca: a localização do usuário ou o último ponto clicado (o clique vence)
   private origem: L.LatLng | null = null;
 
+  // Estrela amarela para o estabelecimento mais próximo (o estilo fica no mapa.component.css)
+  private readonly iconeMaisProximo = L.divIcon({
+    className: 'marcador-mais-proximo',
+    html: '★',
+    iconSize: [32, 32]
+  });
+
   ngAfterViewInit(): void {
-    this.inicializarMapa();
+  this.inicializarMapa();
 
-    // Se o login já pediu a localização, isto não pede de novo (útil para quem abre /mapa direto)
-    this.localizacao.solicitar();
+  // Se o login já pediu a localização, isto não pede de novo (útil para quem abre /mapa direto)
+  this.localizacao.solicitar();
 
-    // O BehaviorSubject entrega a posição na hora, se ela já existir, e avisa quando chegar
-    this.localizacao.posicao$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(pos => {
-        if (pos) {
-          this.mostrarPosicaoDoUsuario(pos);
-        }
-      });
+  // O BehaviorSubject entrega a posição na hora, se ela já existir, e avisa quando chegar
+  this.localizacao.posicao$
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(pos => {
+      if (pos) {
+        this.mostrarPosicaoDoUsuario(pos);
+      }
+    });
 
-    // Fica "escutando" o botão de buscar do painel lateral
-    this.busca.buscaSolicitada$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(raioKm => this.buscarProximos(raioKm));
-  }
+  // Fica "escutando" o botão de buscar do painel lateral
+  this.busca.buscaSolicitada$
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe(pedido => this.buscarProximos(pedido));
+}
 
   ngOnDestroy(): void {
     this.buscaEmAndamento?.unsubscribe();
@@ -108,69 +115,85 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private buscarProximos(raioKm: number): void {
-    // Sem localização e sem clique, usa o centro do que está visível no mapa
-    const centro = this.origem ?? this.map.getCenter();
+  private buscarProximos(pedido: PedidoBusca): void {
+  const { raioKm, conector } = pedido;
 
-    this.busca.buscando.set(true);
-    this.busca.status.set('');
+  // Sem localização e sem clique, usa o centro do que está visível no mapa
+  const centro = this.origem ?? this.map.getCenter();
 
-    // Se o usuário clicar em buscar de novo, cancela a requisição anterior
-    this.buscaEmAndamento?.unsubscribe();
-    this.buscaEmAndamento = this.api.buscarProximos(centro.lat, centro.lng, raioKm).subscribe({
-      next: (resultados) => {
-        this.desenharResultados(resultados);
-        this.desenharCirculo(centro, raioKm);
-        this.busca.status.set(
-          resultados.length === 0
-            ? `Nenhum estabelecimento em até ${raioKm} km.`
-            : `${resultados.length} estabelecimento(s) em até ${raioKm} km.`
-        );
-        this.busca.buscando.set(false);
-      },
-      error: () => {
-        this.busca.status.set('Não foi possível buscar carregadores. Tente novamente.');
-        this.busca.buscando.set(false);
-      }
-    });
-  }
+  this.busca.buscando.set(true);
+  this.busca.status.set('');
 
-  private desenharResultados(lista: EstabelecimentoProximo[]): void {
-    this.camadaResultados.clearLayers();
+  // Se o usuário clicar em buscar de novo, cancela a requisição anterior
+  this.buscaEmAndamento?.unsubscribe();
+  this.buscaEmAndamento = this.api.buscarProximos(centro.lat, centro.lng, raioKm, conector).subscribe({
+    next: (resultados) => {
+      this.desenharResultados(resultados);
+      this.desenharCirculo(centro, raioKm);
 
-    lista.forEach(e => {
-      L.marker([e.latitude, e.longitude])
-        .bindPopup(this.montarPopup(e))
-        .addTo(this.camadaResultados);
-    });
-  }
+      const filtro = conector ? ` com conector ${conector}` : '';
+      this.busca.status.set(
+        resultados.length === 0
+          ? `Nenhum estabelecimento${filtro} em até ${raioKm} km.`
+          : `${resultados.length} estabelecimento(s)${filtro} em até ${raioKm} km. O mais próximo está em amarelo.`
+      );
+      this.busca.buscando.set(false);
+    },
+    error: () => {
+      this.busca.status.set('Não foi possível buscar carregadores. Tente novamente.');
+      this.busca.buscando.set(false);
+    }
+  });
+}
 
-  /** Círculo mostrando a área pesquisada; o mapa dá zoom para enquadrá-lo */
+private desenharResultados(lista: EstabelecimentoProximo[]): void {
+  this.camadaResultados.clearLayers();
+
+  // A API devolve a lista ordenada por distância: o primeiro é o mais próximo
+  lista.forEach((e, indice) => {
+    const maisProximo = indice === 0;
+
+    L.marker(
+      [e.latitude, e.longitude],
+      maisProximo ? { icon: this.iconeMaisProximo, zIndexOffset: 1000 } : {}
+    )
+      .bindPopup(this.montarPopup(e, maisProximo))
+      .addTo(this.camadaResultados);
+  });
+}
+
+private montarPopup(e: EstabelecimentoProximo, maisProximo: boolean): string {
+  const pontos = e.pontosRecarga.map(p => {
+    const preco = p.gratuito
+      ? 'Gratuito'
+      : p.precoPorKwh != null
+        ? `R$ ${p.precoPorKwh.toFixed(2).replace('.', ',')}/kWh`
+        : 'Preço não informado';
+    return `<li>${p.quantidade}× ${this.esc(p.potencia)} · ${this.esc(p.tipoConector)} · ${preco}</li>`;
+  }).join('');
+
+  const destaque = maisProximo ? '<strong>★ Mais próximo</strong><br>' : '';
+
+  return `
+    ${destaque}
+    <strong>${this.esc(e.nome)}</strong><br>
+    ${this.esc(e.categoria)} · ${e.distanciaKm} km<br>
+    Horário: ${this.esc(e.horarioFuncionamento)}
+    <ul style="margin:6px 0 0;padding-left:18px">${pontos}</ul>
+  `;
+}
+
+  
+
+  /** Círculo mostrando a área pesquisada, o mapa dá zoom no local */
   private desenharCirculo(centro: L.LatLng, raioKm: number): void {
     this.circuloBusca?.remove();
     this.circuloBusca = L.circle(centro, { radius: raioKm * 1000, weight: 1 }).addTo(this.map);
     this.map.fitBounds(this.circuloBusca.getBounds());
   }
 
-  private montarPopup(e: EstabelecimentoProximo): string {
-    const pontos = e.pontosRecarga.map(p => {
-      const preco = p.gratuito
-        ? 'Gratuito'
-        : p.precoPorKwh != null
-          ? `R$ ${p.precoPorKwh.toFixed(2).replace('.', ',')}/kWh`
-          : 'Preço não informado';
-      return `<li>${p.quantidade}× ${this.esc(p.potencia)} · ${this.esc(p.tipoConector)} · ${preco}</li>`;
-    }).join('');
 
-    return `
-      <strong>${this.esc(e.nome)}</strong><br>
-      ${this.esc(e.categoria)} · ${e.distanciaKm} km<br>
-      Horário: ${this.esc(e.horarioFuncionamento)}
-      <ul style="margin:6px 0 0;padding-left:18px">${pontos}</ul>
-    `;
-  }
-
-  /** Os textos vêm de formulários: sem isso, um "<" no nome quebraria o popup */
+  /** Os textos vêm de formulários então tem que ter isso para não quebrar o popup **/
   private esc(texto: string | null | undefined): string {
     const trocas: Record<string, string> = {
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'

@@ -22,7 +22,8 @@ public class EstabelecimentoController {
     @GetMapping("/proximos")
     public List<EstabelecimentoProximoResponse> proximos(@RequestParam double latitude,
             @RequestParam double longitude,
-            @RequestParam double raio) {
-        return service.buscarProximos(latitude, longitude, raio);
+            @RequestParam double raio,
+            @RequestParam(required = false) String conector) {
+        return service.buscarProximos(latitude, longitude, raio, conector);
     }
 }
